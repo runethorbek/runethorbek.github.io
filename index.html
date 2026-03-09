@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valgtesten 2026</title>
+    <meta name="description"
+        content="Tag valgtesten til folketingsvalget 2026. Find ud af hvilket parti du er mest enig med baseret på de vigtigste valgtemaer.">
+    <!-- Google Fonts for Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Modern aesthetics and CSS reset */
+        :root {
+            --bg-color: #0f172a;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --font-family: 'Outfit', sans-serif;
+
+            --btn-agree-strong: #10b981;
+            --btn-agree: #34d399;
+            --btn-neutral: #64748b;
+            --btn-disagree: #f87171;
+            --btn-disagree-strong: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Glassmorphism Card Style */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Start Screen */
+        .start-screen {
+            text-align: center;
+        }
+
+        .title-badge {
+            display: inline-block;
+            padding: 0.5rem 1.2rem;
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .main-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            border-radius: 99px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: var(--font-family);
+            box-shadow: 0 10px 20px -10px var(--accent-color);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -10px var(--accent-color);
+        }
+
+        .btn-primary:active {
+            transform: translateY(1px);
+        }
+
+        /* Question Screen */
+        .question-screen.animating-out {
+            animation: slideOut 0.3s ease-in forwards;
+        }
+
+        .question-screen {
+            animation: slideIn 0.4s ease-out forwards;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .progress-bar-bg {
+            flex-grow: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin: 0 1rem;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--accent-color);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .theme-tag {
+            color: var(--accent-color);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .question-text {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .question-desc {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .btn-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: var(--font-family);
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+
+        .btn-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .btn-str-agree:hover {
+            border-color: var(--btn-agree-strong);
+        }
+
+        .btn-str-agree .option-indicator {
+            background-color: var(--btn-agree-strong);
+        }
+
+        .btn-agree:hover {
+            border-color: var(--btn-agree);
+        }
+
+        .btn-agree .option-indicator {
+            background-color: var(--btn-agree);
+        }
+
+        .btn-neu:hover {
+            border-color: var(--btn-neutral);
+        }
+
+        .btn-neu .option-indicator {
+            background-color: var(--btn-neutral);
+        }
+
+        .btn-dis:hover {
+            border-color: var(--btn-disagree);
+        }
+
+        .btn-dis .option-indicator {
+            background-color: var(--btn-disagree);
+        }
+
+        .btn-str-dis:hover {
+            border-color: var(--btn-disagree-strong);
+        }
+
+        .btn-str-dis .option-indicator {
+            background-color: var(--btn-disagree-strong);
+        }
+
+        /* Result Screen */
+        .result-screen {
+            text-align: center;
+        }
+
+        .result-header {
+            margin-bottom: 2rem;
+        }
+
+        .podium {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+            text-align: left;
+        }
+
+        .party-result-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .party-result-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .party-result-card:nth-child(1) {
+            border-color: rgba(255, 215, 0, 0.5);
+            /* Gold border for top 1 */
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
+        }
+
+        .party-rank {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            width: 30px;
+        }
+
+        .party-result-card:nth-child(1) .party-rank {
+            color: #ffd700;
+        }
+
+        .party-result-card:nth-child(2) .party-rank {
+            color: #c0c0c0;
+        }
+
+        .party-result-card:nth-child(3) .party-rank {
+            color: #cd7f32;
+        }
+
+        .party-logo-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            margin-right: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .party-info {
+            flex-grow: 1;
+        }
+
+        .party-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .party-match-text {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .match-percentage {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .match-bar-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            width: 100%;
+            background: transparent;
+        }
+
+        .match-bar-fill {
+            height: 100%;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 99px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: var(--font-family);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Ambient animated background orbs */
+        body::before,
+        body::after {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: 0;
+            opacity: 0.4;
+            animation: float 20s infinite ease-in-out alternate;
+        }
+
+        body::before {
+            background: rgba(59, 130, 246, 0.3);
+            top: -100px;
+            left: -100px;
+        }
+
+        body::after {
+            background: rgba(139, 92, 246, 0.2);
+            bottom: -200px;
+            right: -100px;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(100px, 50px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container" id="app">
+        <!-- Content will be injected by JavaScript -->
+    </div>
+
+    <script>
+// Components
+function renderStartScreen(container, onStart) {
+    container.innerHTML = `
+        <div class="glass-card start-screen">
+            <span class="title-badge">Folketingsvalg 2026</span>
+            <h1 class="main-title">Hvem er du mest enig med?</h1>
+            <p class="subtitle">Tag testen baseret på de vigtigste politiske temaer for valget i 2026. Vi har analyseret partiernes holdninger, så du kan finde det parti, der matcher dig bedst.</p>
+            <button id="start-btn" class="btn-primary">Start Valgtesten</button>
+        </div>
+    `;
+
+    document.getElementById('start-btn').addEventListener('click', onStart);
+}
+
+function renderQuestionScreen(container, question, currentIndex, totalQuestions, onAnswer) {
+    const progressPercent = Math.round((currentIndex / totalQuestions) * 100);
+
+    container.innerHTML = `
+        <div class="glass-card question-screen" id="q-card">
+            <div class="progress-container">
+                <span>Spørgsmål ${currentIndex} af ${totalQuestions}</span>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width: ${progressPercent}%"></div>
+                </div>
+                <span>${progressPercent}%</span>
+            </div>
+            
+            <span class="theme-tag">${question.theme}</span>
+            <h2 class="question-text">"${question.text}"</h2>
+            <p class="question-desc">${question.description}</p>
+            
+            <div class="options-grid">
+                <button class="btn-option btn-str-agree" data-score="2">
+                    <div class="option-indicator"></div>
+                    Meget enig
+                </button>
+                <button class="btn-option btn-agree" data-score="1">
+                    <div class="option-indicator"></div>
+                    Overvejende enig
+                </button>
+                <button class="btn-option btn-neu" data-score="0">
+                    <div class="option-indicator"></div>
+                    Hverken/eller (ved ikke)
+                </button>
+                <button class="btn-option btn-dis" data-score="-1">
+                    <div class="option-indicator"></div>
+                    Overvejende uenig
+                </button>
+                <button class="btn-option btn-str-dis" data-score="-2">
+                    <div class="option-indicator"></div>
+                    Meget uenig
+                </button>
+            </div>
+        </div>
+    `;
+
+    const buttons = container.querySelectorAll('.btn-option');
+    const qCard = document.getElementById('q-card');
+
+    buttons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            buttons.forEach(b => b.disabled = true);
+            btn.style.background = 'rgba(255,255,255,0.15)';
+            btn.style.borderColor = 'white';
+            const score = parseInt(btn.getAttribute('data-score'), 10);
+            
+            setTimeout(() => {
+                qCard.classList.add('animating-out');
+                setTimeout(() => {
+                    onAnswer(score);
+                }, 300);
+            }, 300);
+        });
+    });
+}
+
+function renderResultScreen(container, results, onRestart) {
+    const top3 = results.slice(0, 3);
+    
+    let podiumHTML = top3.map((party, index) => {
+        return `
+            <div class="party-result-card">
+                <div class="party-rank">#${index + 1}</div>
+                <div class="party-logo-circle" style="background-color: ${party.color};">
+                    ${party.letter}
+                </div>
+                <div class="party-info">
+                    <div class="party-name">${party.name}</div>
+                    <div class="party-match-text">I er ${party.matchPercentage}% enige</div>
+                </div>
+                <div class="match-percentage">${party.matchPercentage}%</div>
+                <div class="match-bar-container">
+                    <div class="match-bar-fill" style="width: ${party.matchPercentage}%; background-color: ${party.color};"></div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    container.innerHTML = `
+        <div class="glass-card result-screen">
+            <div class="result-header">
+                <span class="title-badge">Dit Resultat</span>
+                <h2 class="main-title">Her er dine matchende partier</h2>
+                <p class="subtitle">Baseret på dine svar til folketingsvalget 2026 er du mest enig med disse partier.</p>
+            </div>
+            <div class="podium">
+                ${podiumHTML}
+            </div>
+            <button id="restart-btn" class="btn-secondary">Tag testen igen</button>
+        </div>
+    `;
+
+    document.getElementById('restart-btn').addEventListener('click', onRestart);
+}
+
+// Main App Logic
+const appElement = document.getElementById('app');
+
+const statements = [
+    {
+        id: 's1',
+        theme: 'Pensionsalder',
+        text: 'Pensionsalderen skal fortsætte med at stige i takt med, at vi lever længere.',
+        description: 'Flere partier ønsker at ændre den nuværende aftale om, at pensionsalderen automatisk stiger.'
+    },
+    {
+        id: 's2',
+        theme: 'Formueskat',
+        text: 'Der skal indføres en ny skat på store formuer for at finansiere velfærd og reducere ulighed.',
+        description: 'Der er delte meninger om, hvorvidt en formueskat vil gavne samfundet eller skade investeringer og vækst.'
+    },
+    {
+        id: 's3',
+        theme: 'Folkeskolen',
+        text: 'Der skal indføres et centralt fastsat loft over hvor mange elever, der må være i en folkeskoleklasse.',
+        description: 'Nogle partier vil sikre mindre klasser fra centralt hold, mens andre vil overlade det til de lokale skoler.'
+    },
+    {
+        id: 's4',
+        theme: 'Udviklingsbistand',
+        text: 'Danmark skal skære i udviklingsbistanden til andre lande for at prioritere vores egen velfærd og sikkerhed.',
+        description: 'Dette vil frigøre milliarder til dansk velfærd, men reducere Danmarks hjælp til verdens fattigste.'
+    },
+    {
+        id: 's5',
+        theme: 'Klima',
+        text: 'Den grønne omstilling skal gå meget hurtigere, også selvom det koster samfundet og borgerne flere penge.',
+        description: 'Skal klimaet prioriteres over at holde afgifter og skatter nede for den enkelte?'
+    },
+    {
+        id: 's6',
+        theme: 'Udlændingepolitik',
+        text: 'Udlændingepolitikken i Danmark er ikke stram nok og bør strammes yderligere.',
+        description: 'Skal Danmark modtage færre udlændinge og stille hårdere krav til dem, der er her?'
+    }
+];
+
+const parties = [
+    { letter: 'A', name: 'Socialdemokratiet', color: '#c7243c', scores: [-1, 2, 1, -2, 1, 1] },
+    { letter: 'V', name: 'Venstre', color: '#014389', scores: [2, -2, -1, 1, 0, 1] },
+    { letter: 'M', name: 'Moderaterne', color: '#8224b4', scores: [1, -2, -2, -2, 0, 0] },
+    { letter: 'F', name: 'SF', color: '#e071a5', scores: [-1, 2, 2, -2, 2, -1] },
+    { letter: 'I', name: 'Liberal Alliance', color: '#028da3', scores: [2, -2, -2, 2, -1, 0] },
+    { letter: 'C', name: 'Konservative', color: '#9bb128', scores: [2, -2, -1, -2, 0, 1] },
+    { letter: 'Æ', name: 'Danmarksdemokraterne', color: '#74b2dc', scores: [2, -2, 0, 2, -1, 2] },
+    { letter: 'Ø', name: 'Enhedslisten', color: '#df4d18', scores: [-2, 2, 2, -2, 2, -2] },
+    { letter: 'B', name: 'Radikale Venstre', color: '#e20080', scores: [1, -2, -1, -2, 2, -2] },
+    { letter: 'O', name: 'Dansk Folkeparti', color: '#e7d420', scores: [-2, 0, 0, 2, -2, 2] },
+    { letter: 'Å', name: 'Alternativet', color: '#00fe00', scores: [-2, 2, 2, -2, 2, -2] },
+    { letter: 'H', name: 'Borgernes Parti', color: '#000000', scores: [-1, -2, -1, 2, -1, 2] }
+];
+
+let currentQuestionIndex = 0;
+const userAnswers = [];
+
+function startApp() {
+    renderStartScreen(appElement, startQuiz);
+}
+
+function startQuiz() {
+    currentQuestionIndex = 0;
+    userAnswers.length = 0;
+    showQuestion();
+}
+
+function showQuestion() {
+    if (currentQuestionIndex < statements.length) {
+        renderQuestionScreen(
+            appElement, 
+            statements[currentQuestionIndex], 
+            currentQuestionIndex + 1, 
+            statements.length, 
+            handleAnswer
+        );
+    } else {
+        calculateResults();
+    }
+}
+
+function handleAnswer(score) {
+    userAnswers.push(score);
+    currentQuestionIndex++;
+    if (currentQuestionIndex < statements.length) {
+        setTimeout(() => {
+            showQuestion();
+        }, 300);
+    } else {
+        setTimeout(() => {
+            calculateResults();
+        }, 300);
+    }
+}
+
+function restartApp() {
+    startQuiz();
+}
+
+function calculateResults() {
+    const maxPossibleDistance = statements.length * 4;
+
+    const results = parties.map(party => {
+        let totalDistance = 0;
+        for (let i = 0; i < statements.length; i++) {
+            const diff = Math.abs(userAnswers[i] - party.scores[i]);
+            totalDistance += diff;
+        }
+
+        const matchPercentage = Math.round(((maxPossibleDistance - totalDistance) / maxPossibleDistance) * 100);
+
+        return {
+            ...party,
+            matchPercentage,
+            distance: totalDistance
+        };
+    });
+
+    results.sort((a, b) => b.matchPercentage - a.matchPercentage);
+    renderResultScreen(appElement, results, restartApp);
+}
+
+startApp();
+    </script>
+</body>
+
+</html>
