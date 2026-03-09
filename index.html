@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Valgtesten 2026</title>
     <meta name="description"
         content="Tag valgtesten til folketingsvalget 2026. Find ud af hvilket parti du er mest enig med baseret på de vigtigste valgtemaer.">
@@ -38,33 +39,39 @@
 
         html,
         body {
-            max-width: 100vw;
-            overflow-x: hidden;
-            overscroll-behavior-y: none;
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            overflow: hidden;
+            /* Force absolutely no scrolling */
+            overscroll-behavior: none;
+            -webkit-overflow-scrolling: touch;
         }
 
         body {
             font-family: var(--font-family);
             background-color: var(--bg-color);
             color: var(--text-primary);
-            min-height: 100vh;
-            min-height: 100dvh;
-            /* Modern mobile browser viewport height */
             display: flex;
             justify-content: center;
             align-items: center;
             background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
             line-height: 1.5;
+            /* The following properties were present in the original body rule and are preserved */
+            min-height: 100vh;
+            min-height: 100dvh;
             padding: 10px;
         }
 
         .app-container {
             width: 100%;
+            height: 100%;
             max-width: 600px;
-            padding: 2rem;
+            padding: 2rem 1rem;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             position: relative;
             z-index: 10;
         }
@@ -474,126 +481,159 @@
         @media (max-width: 600px),
         (max-height: 850px) {
             .app-container {
-                padding: 0;
+                padding: 10px;
+                height: 100dvh;
+                /* Use dynamic viewport height */
+                justify-content: center;
             }
 
             .glass-card {
-                padding: 1.25rem 1rem;
-                border-radius: 20px;
+                padding: 1rem 0.75rem;
+                border-radius: 16px;
+                max-height: 95vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
             }
 
             .main-title {
-                font-size: 1.8rem;
-                margin-bottom: 0.5rem;
+                font-size: 1.5rem;
+                margin-bottom: 0.25rem;
             }
 
             .subtitle {
-                font-size: 0.95rem;
-                margin-bottom: 1.25rem;
+                font-size: 0.85rem;
+                margin-bottom: 1rem;
+                line-height: 1.3;
             }
 
             .title-badge {
-                margin-bottom: 0.75rem;
-            }
-
-            .question-text {
-                font-size: 1.3rem;
+                padding: 0.3rem 0.8rem;
+                font-size: 0.75rem;
                 margin-bottom: 0.5rem;
             }
 
+            .question-text {
+                font-size: 1.15rem;
+                margin-bottom: 0.25rem;
+                line-height: 1.2;
+            }
+
             .question-desc {
-                font-size: 0.9rem;
-                margin-bottom: 1rem;
+                font-size: 0.8rem;
+                margin-bottom: 0.5rem;
+                line-height: 1.3;
             }
 
             .options-grid {
-                gap: 0.5rem;
+                gap: 0.35rem;
             }
 
             .btn-option {
-                padding: 0.75rem;
-                font-size: 0.95rem;
+                padding: 0.6rem;
+                font-size: 0.85rem;
+                border-radius: 8px;
+            }
+
+            .option-indicator {
+                width: 10px;
+                height: 10px;
+                margin-right: 0.5rem;
             }
 
             .progress-container {
-                margin-bottom: 1rem;
+                margin-bottom: 0.5rem;
+                font-size: 0.75rem;
+            }
+
+            .theme-tag {
+                font-size: 0.75rem;
+                margin-bottom: 0.25rem;
             }
 
             .result-header {
-                margin-bottom: 1rem;
+                margin-bottom: 0.5rem;
             }
 
             .podium {
-                margin-bottom: 1.25rem;
-                gap: 0.5rem;
+                margin-bottom: 0.75rem;
+                gap: 0.35rem;
             }
 
             .party-result-card {
-                padding: 0.85rem;
+                padding: 0.65rem;
+                border-radius: 12px;
             }
 
             .party-logo-circle {
-                width: 40px;
-                height: 40px;
-                font-size: 1.25rem;
-                margin-right: 0.75rem;
+                width: 36px;
+                height: 36px;
+                font-size: 1.1rem;
+                margin-right: 0.5rem;
             }
 
             .party-name {
-                font-size: 1rem;
+                font-size: 0.95rem;
+            }
+
+            .party-match-text {
+                font-size: 0.75rem;
             }
 
             .match-percentage {
-                font-size: 1.25rem;
+                font-size: 1.15rem;
             }
 
             .btn-primary,
             .btn-secondary {
                 width: 100%;
-                padding: 0.8rem 1.5rem;
+                padding: 0.75rem 1rem;
+                font-size: 1rem;
+                margin-top: 0.25rem;
             }
         }
 
         /* Very tall/narrow phones or older iPhones (e.g. iPhone SE) */
         @media (max-height: 670px) {
             .glass-card {
-                padding: 1rem;
+                padding: 0.75rem 0.5rem;
             }
 
             .main-title {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
             }
 
             .subtitle {
-                font-size: 0.85rem;
-                margin-bottom: 1rem;
-            }
-
-            .question-text {
-                font-size: 1.15rem;
-            }
-
-            .question-desc {
+                font-size: 0.75rem;
                 margin-bottom: 0.75rem;
             }
 
-            .btn-option {
-                padding: 0.6rem;
-                font-size: 0.85rem;
-            }
-
-            .options-grid {
-                gap: 0.4rem;
-            }
-
-            .party-logo-circle {
-                width: 32px;
-                height: 32px;
+            .question-text {
                 font-size: 1rem;
             }
 
+            .question-desc {
+                margin-bottom: 0.4rem;
+                font-size: 0.75rem;
+            }
+
+            .btn-option {
+                padding: 0.5rem;
+                font-size: 0.8rem;
+            }
+
+            .options-grid {
+                gap: 0.25rem;
+            }
+
+            .party-logo-circle {
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
+            }
+
             .party-result-card {
-                padding: 0.75rem;
+                padding: 0.5rem;
             }
         }
     </style>
