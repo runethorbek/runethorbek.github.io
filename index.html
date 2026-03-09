@@ -36,17 +36,26 @@
             padding: 0;
         }
 
+        html,
+        body {
+            max-width: 100vw;
+            overflow-x: hidden;
+            overscroll-behavior-y: none;
+        }
+
         body {
             font-family: var(--font-family);
             background-color: var(--bg-color);
             color: var(--text-primary);
             min-height: 100vh;
+            min-height: 100dvh;
+            /* Modern mobile browser viewport height */
             display: flex;
             justify-content: center;
             align-items: center;
             background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
             line-height: 1.5;
-            overflow-x: hidden;
+            padding: 10px;
         }
 
         .app-container {
@@ -133,6 +142,7 @@
             margin-bottom: 1rem;
             background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             line-height: 1.2;
         }
@@ -459,6 +469,133 @@
                 transform: translate(100px, 50px);
             }
         }
+
+        /* --- Mobile Responsiveness: Fit Screen without Scrolling --- */
+        @media (max-width: 600px),
+        (max-height: 850px) {
+            .app-container {
+                padding: 0;
+            }
+
+            .glass-card {
+                padding: 1.25rem 1rem;
+                border-radius: 20px;
+            }
+
+            .main-title {
+                font-size: 1.8rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .subtitle {
+                font-size: 0.95rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .title-badge {
+                margin-bottom: 0.75rem;
+            }
+
+            .question-text {
+                font-size: 1.3rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .question-desc {
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+            }
+
+            .options-grid {
+                gap: 0.5rem;
+            }
+
+            .btn-option {
+                padding: 0.75rem;
+                font-size: 0.95rem;
+            }
+
+            .progress-container {
+                margin-bottom: 1rem;
+            }
+
+            .result-header {
+                margin-bottom: 1rem;
+            }
+
+            .podium {
+                margin-bottom: 1.25rem;
+                gap: 0.5rem;
+            }
+
+            .party-result-card {
+                padding: 0.85rem;
+            }
+
+            .party-logo-circle {
+                width: 40px;
+                height: 40px;
+                font-size: 1.25rem;
+                margin-right: 0.75rem;
+            }
+
+            .party-name {
+                font-size: 1rem;
+            }
+
+            .match-percentage {
+                font-size: 1.25rem;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                padding: 0.8rem 1.5rem;
+            }
+        }
+
+        /* Very tall/narrow phones or older iPhones (e.g. iPhone SE) */
+        @media (max-height: 670px) {
+            .glass-card {
+                padding: 1rem;
+            }
+
+            .main-title {
+                font-size: 1.5rem;
+            }
+
+            .subtitle {
+                font-size: 0.85rem;
+                margin-bottom: 1rem;
+            }
+
+            .question-text {
+                font-size: 1.15rem;
+            }
+
+            .question-desc {
+                margin-bottom: 0.75rem;
+            }
+
+            .btn-option {
+                padding: 0.6rem;
+                font-size: 0.85rem;
+            }
+
+            .options-grid {
+                gap: 0.4rem;
+            }
+
+            .party-logo-circle {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+            }
+
+            .party-result-card {
+                padding: 0.75rem;
+            }
+        }
     </style>
 </head>
 
@@ -468,9 +605,9 @@
     </div>
 
     <script>
-// Components
-function renderStartScreen(container, onStart) {
-    container.innerHTML = `
+        // Components
+        function renderStartScreen(container, onStart) {
+            container.innerHTML = `
         <div class="glass-card start-screen">
             <span class="title-badge">Folketingsvalg 2026</span>
             <h1 class="main-title">Hvem er du mest enig med?</h1>
@@ -479,13 +616,13 @@ function renderStartScreen(container, onStart) {
         </div>
     `;
 
-    document.getElementById('start-btn').addEventListener('click', onStart);
-}
+            document.getElementById('start-btn').addEventListener('click', onStart);
+        }
 
-function renderQuestionScreen(container, question, currentIndex, totalQuestions, onAnswer) {
-    const progressPercent = Math.round((currentIndex / totalQuestions) * 100);
+        function renderQuestionScreen(container, question, currentIndex, totalQuestions, onAnswer) {
+            const progressPercent = Math.round((currentIndex / totalQuestions) * 100);
 
-    container.innerHTML = `
+            container.innerHTML = `
         <div class="glass-card question-screen" id="q-card">
             <div class="progress-container">
                 <span>Spørgsmål ${currentIndex} af ${totalQuestions}</span>
@@ -524,31 +661,31 @@ function renderQuestionScreen(container, question, currentIndex, totalQuestions,
         </div>
     `;
 
-    const buttons = container.querySelectorAll('.btn-option');
-    const qCard = document.getElementById('q-card');
+            const buttons = container.querySelectorAll('.btn-option');
+            const qCard = document.getElementById('q-card');
 
-    buttons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            buttons.forEach(b => b.disabled = true);
-            btn.style.background = 'rgba(255,255,255,0.15)';
-            btn.style.borderColor = 'white';
-            const score = parseInt(btn.getAttribute('data-score'), 10);
-            
-            setTimeout(() => {
-                qCard.classList.add('animating-out');
-                setTimeout(() => {
-                    onAnswer(score);
-                }, 300);
-            }, 300);
-        });
-    });
-}
+            buttons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    buttons.forEach(b => b.disabled = true);
+                    btn.style.background = 'rgba(255,255,255,0.15)';
+                    btn.style.borderColor = 'white';
+                    const score = parseInt(btn.getAttribute('data-score'), 10);
 
-function renderResultScreen(container, results, onRestart) {
-    const top3 = results.slice(0, 3);
-    
-    let podiumHTML = top3.map((party, index) => {
-        return `
+                    setTimeout(() => {
+                        qCard.classList.add('animating-out');
+                        setTimeout(() => {
+                            onAnswer(score);
+                        }, 300);
+                    }, 300);
+                });
+            });
+        }
+
+        function renderResultScreen(container, results, onRestart) {
+            const top3 = results.slice(0, 3);
+
+            let podiumHTML = top3.map((party, index) => {
+                return `
             <div class="party-result-card">
                 <div class="party-rank">#${index + 1}</div>
                 <div class="party-logo-circle" style="background-color: ${party.color};">
@@ -564,9 +701,9 @@ function renderResultScreen(container, results, onRestart) {
                 </div>
             </div>
         `;
-    }).join('');
+            }).join('');
 
-    container.innerHTML = `
+            container.innerHTML = `
         <div class="glass-card result-screen">
             <div class="result-header">
                 <span class="title-badge">Dit Resultat</span>
@@ -580,135 +717,135 @@ function renderResultScreen(container, results, onRestart) {
         </div>
     `;
 
-    document.getElementById('restart-btn').addEventListener('click', onRestart);
-}
-
-// Main App Logic
-const appElement = document.getElementById('app');
-
-const statements = [
-    {
-        id: 's1',
-        theme: 'Pensionsalder',
-        text: 'Pensionsalderen skal fortsætte med at stige i takt med, at vi lever længere.',
-        description: 'Flere partier ønsker at ændre den nuværende aftale om, at pensionsalderen automatisk stiger.'
-    },
-    {
-        id: 's2',
-        theme: 'Formueskat',
-        text: 'Der skal indføres en ny skat på store formuer for at finansiere velfærd og reducere ulighed.',
-        description: 'Der er delte meninger om, hvorvidt en formueskat vil gavne samfundet eller skade investeringer og vækst.'
-    },
-    {
-        id: 's3',
-        theme: 'Folkeskolen',
-        text: 'Der skal indføres et centralt fastsat loft over hvor mange elever, der må være i en folkeskoleklasse.',
-        description: 'Nogle partier vil sikre mindre klasser fra centralt hold, mens andre vil overlade det til de lokale skoler.'
-    },
-    {
-        id: 's4',
-        theme: 'Udviklingsbistand',
-        text: 'Danmark skal skære i udviklingsbistanden til andre lande for at prioritere vores egen velfærd og sikkerhed.',
-        description: 'Dette vil frigøre milliarder til dansk velfærd, men reducere Danmarks hjælp til verdens fattigste.'
-    },
-    {
-        id: 's5',
-        theme: 'Klima',
-        text: 'Den grønne omstilling skal gå meget hurtigere, også selvom det koster samfundet og borgerne flere penge.',
-        description: 'Skal klimaet prioriteres over at holde afgifter og skatter nede for den enkelte?'
-    },
-    {
-        id: 's6',
-        theme: 'Udlændingepolitik',
-        text: 'Udlændingepolitikken i Danmark er ikke stram nok og bør strammes yderligere.',
-        description: 'Skal Danmark modtage færre udlændinge og stille hårdere krav til dem, der er her?'
-    }
-];
-
-const parties = [
-    { letter: 'A', name: 'Socialdemokratiet', color: '#c7243c', scores: [-1, 2, 1, -2, 1, 1] },
-    { letter: 'V', name: 'Venstre', color: '#014389', scores: [2, -2, -1, 1, 0, 1] },
-    { letter: 'M', name: 'Moderaterne', color: '#8224b4', scores: [1, -2, -2, -2, 0, 0] },
-    { letter: 'F', name: 'SF', color: '#e071a5', scores: [-1, 2, 2, -2, 2, -1] },
-    { letter: 'I', name: 'Liberal Alliance', color: '#028da3', scores: [2, -2, -2, 2, -1, 0] },
-    { letter: 'C', name: 'Konservative', color: '#9bb128', scores: [2, -2, -1, -2, 0, 1] },
-    { letter: 'Æ', name: 'Danmarksdemokraterne', color: '#74b2dc', scores: [2, -2, 0, 2, -1, 2] },
-    { letter: 'Ø', name: 'Enhedslisten', color: '#df4d18', scores: [-2, 2, 2, -2, 2, -2] },
-    { letter: 'B', name: 'Radikale Venstre', color: '#e20080', scores: [1, -2, -1, -2, 2, -2] },
-    { letter: 'O', name: 'Dansk Folkeparti', color: '#e7d420', scores: [-2, 0, 0, 2, -2, 2] },
-    { letter: 'Å', name: 'Alternativet', color: '#00fe00', scores: [-2, 2, 2, -2, 2, -2] },
-    { letter: 'H', name: 'Borgernes Parti', color: '#000000', scores: [-1, -2, -1, 2, -1, 2] }
-];
-
-let currentQuestionIndex = 0;
-const userAnswers = [];
-
-function startApp() {
-    renderStartScreen(appElement, startQuiz);
-}
-
-function startQuiz() {
-    currentQuestionIndex = 0;
-    userAnswers.length = 0;
-    showQuestion();
-}
-
-function showQuestion() {
-    if (currentQuestionIndex < statements.length) {
-        renderQuestionScreen(
-            appElement, 
-            statements[currentQuestionIndex], 
-            currentQuestionIndex + 1, 
-            statements.length, 
-            handleAnswer
-        );
-    } else {
-        calculateResults();
-    }
-}
-
-function handleAnswer(score) {
-    userAnswers.push(score);
-    currentQuestionIndex++;
-    if (currentQuestionIndex < statements.length) {
-        setTimeout(() => {
-            showQuestion();
-        }, 300);
-    } else {
-        setTimeout(() => {
-            calculateResults();
-        }, 300);
-    }
-}
-
-function restartApp() {
-    startQuiz();
-}
-
-function calculateResults() {
-    const maxPossibleDistance = statements.length * 4;
-
-    const results = parties.map(party => {
-        let totalDistance = 0;
-        for (let i = 0; i < statements.length; i++) {
-            const diff = Math.abs(userAnswers[i] - party.scores[i]);
-            totalDistance += diff;
+            document.getElementById('restart-btn').addEventListener('click', onRestart);
         }
 
-        const matchPercentage = Math.round(((maxPossibleDistance - totalDistance) / maxPossibleDistance) * 100);
+        // Main App Logic
+        const appElement = document.getElementById('app');
 
-        return {
-            ...party,
-            matchPercentage,
-            distance: totalDistance
-        };
-    });
+        const statements = [
+            {
+                id: 's1',
+                theme: 'Pensionsalder',
+                text: 'Pensionsalderen skal fortsætte med at stige i takt med, at vi lever længere.',
+                description: 'Flere partier ønsker at ændre den nuværende aftale om, at pensionsalderen automatisk stiger.'
+            },
+            {
+                id: 's2',
+                theme: 'Formueskat',
+                text: 'Der skal indføres en ny skat på store formuer for at finansiere velfærd og reducere ulighed.',
+                description: 'Der er delte meninger om, hvorvidt en formueskat vil gavne samfundet eller skade investeringer og vækst.'
+            },
+            {
+                id: 's3',
+                theme: 'Folkeskolen',
+                text: 'Der skal indføres et centralt fastsat loft over hvor mange elever, der må være i en folkeskoleklasse.',
+                description: 'Nogle partier vil sikre mindre klasser fra centralt hold, mens andre vil overlade det til de lokale skoler.'
+            },
+            {
+                id: 's4',
+                theme: 'Udviklingsbistand',
+                text: 'Danmark skal skære i udviklingsbistanden til andre lande for at prioritere vores egen velfærd og sikkerhed.',
+                description: 'Dette vil frigøre milliarder til dansk velfærd, men reducere Danmarks hjælp til verdens fattigste.'
+            },
+            {
+                id: 's5',
+                theme: 'Klima',
+                text: 'Den grønne omstilling skal gå meget hurtigere, også selvom det koster samfundet og borgerne flere penge.',
+                description: 'Skal klimaet prioriteres over at holde afgifter og skatter nede for den enkelte?'
+            },
+            {
+                id: 's6',
+                theme: 'Udlændingepolitik',
+                text: 'Udlændingepolitikken i Danmark er ikke stram nok og bør strammes yderligere.',
+                description: 'Skal Danmark modtage færre udlændinge og stille hårdere krav til dem, der er her?'
+            }
+        ];
 
-    results.sort((a, b) => b.matchPercentage - a.matchPercentage);
-    renderResultScreen(appElement, results, restartApp);
-}
+        const parties = [
+            { letter: 'A', name: 'Socialdemokratiet', color: '#c7243c', scores: [-1, 2, 1, -2, 1, 1] },
+            { letter: 'V', name: 'Venstre', color: '#014389', scores: [2, -2, -1, 1, 0, 1] },
+            { letter: 'M', name: 'Moderaterne', color: '#8224b4', scores: [1, -2, -2, -2, 0, 0] },
+            { letter: 'F', name: 'SF', color: '#e071a5', scores: [-1, 2, 2, -2, 2, -1] },
+            { letter: 'I', name: 'Liberal Alliance', color: '#028da3', scores: [2, -2, -2, 2, -1, 0] },
+            { letter: 'C', name: 'Konservative', color: '#9bb128', scores: [2, -2, -1, -2, 0, 1] },
+            { letter: 'Æ', name: 'Danmarksdemokraterne', color: '#74b2dc', scores: [2, -2, 0, 2, -1, 2] },
+            { letter: 'Ø', name: 'Enhedslisten', color: '#df4d18', scores: [-2, 2, 2, -2, 2, -2] },
+            { letter: 'B', name: 'Radikale Venstre', color: '#e20080', scores: [1, -2, -1, -2, 2, -2] },
+            { letter: 'O', name: 'Dansk Folkeparti', color: '#e7d420', scores: [-2, 0, 0, 2, -2, 2] },
+            { letter: 'Å', name: 'Alternativet', color: '#00fe00', scores: [-2, 2, 2, -2, 2, -2] },
+            { letter: 'H', name: 'Borgernes Parti', color: '#000000', scores: [-1, -2, -1, 2, -1, 2] }
+        ];
 
-startApp();
+        let currentQuestionIndex = 0;
+        const userAnswers = [];
+
+        function startApp() {
+            renderStartScreen(appElement, startQuiz);
+        }
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            userAnswers.length = 0;
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentQuestionIndex < statements.length) {
+                renderQuestionScreen(
+                    appElement,
+                    statements[currentQuestionIndex],
+                    currentQuestionIndex + 1,
+                    statements.length,
+                    handleAnswer
+                );
+            } else {
+                calculateResults();
+            }
+        }
+
+        function handleAnswer(score) {
+            userAnswers.push(score);
+            currentQuestionIndex++;
+            if (currentQuestionIndex < statements.length) {
+                setTimeout(() => {
+                    showQuestion();
+                }, 300);
+            } else {
+                setTimeout(() => {
+                    calculateResults();
+                }, 300);
+            }
+        }
+
+        function restartApp() {
+            startQuiz();
+        }
+
+        function calculateResults() {
+            const maxPossibleDistance = statements.length * 4;
+
+            const results = parties.map(party => {
+                let totalDistance = 0;
+                for (let i = 0; i < statements.length; i++) {
+                    const diff = Math.abs(userAnswers[i] - party.scores[i]);
+                    totalDistance += diff;
+                }
+
+                const matchPercentage = Math.round(((maxPossibleDistance - totalDistance) / maxPossibleDistance) * 100);
+
+                return {
+                    ...party,
+                    matchPercentage,
+                    distance: totalDistance
+                };
+            });
+
+            results.sort((a, b) => b.matchPercentage - a.matchPercentage);
+            renderResultScreen(appElement, results, restartApp);
+        }
+
+        startApp();
     </script>
 </body>
 
